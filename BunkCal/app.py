@@ -24,10 +24,10 @@ def calculate_bunkable_classes(total_classes, attended_classes):
     required_classes = math.ceil(required_attendance * total_classes)
     
     if attended_classes >= required_classes:
-        
-        max_bunkable_classes = math.floor((attended_classes - required_classes) / (1 - required_attendance))
+        max_bunkable_classes = total_classes - required_classes
     else:
-        max_bunkable_classes = 0
+        remaining_classes = total_classes - (attended_classes + (total_classes - attended_classes))
+        max_bunkable_classes = max(0, remaining_classes - (required_classes - attended_classes))
     
     return max_bunkable_classes
 
