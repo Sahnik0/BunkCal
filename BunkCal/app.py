@@ -10,32 +10,33 @@ def calculate_attendance(total_classes, attended_classes):
     return attendance_percentage, None
 
 def calculate_bunkable_classes(total_classes, attended_classes):
-    required_attendance = 0.75
-    required_classes = math.ceil(required_attendance * total_classes)
+    required_attendance = 0.75  # 75% attendance required
     
-    if attended_classes >= required_classes:
-        max_bunkable_classes = math.floor((attended_classes - required_classes) / (1 - required_attendance))
+    # Calculate the minimum number of classes needed to maintain 75% attendance
+    min_required_classes = math.ceil(total_classes * required_attendance)
+    
+    if attended_classes >= min_required_classes:
+        # If already meeting the requirement, calculate how many more can be missed
+        bunkable_classes = attended_classes - min_required_classes
     else:
-        max_bunkable_classes = 0
+        # If below the requirement, can't miss any more classes
+        bunkable_classes = 0
     
-    return max_bunkable_classes
+    return bunkable_classes
 
 def forecast_classes_needed(total_classes, attended_classes, future_total_classes):
     required_attendance = 0.75
     
-    current_attendance_percentage = attended_classes / total_classes
-    future_classes_needed = 0
-    while (attended_classes + future_classes_needed) / future_total_classes < required_attendance:
-        future_classes_needed += 1
-        
+    future_classes_needed = max(0, math.ceil(future_total_classes * required_attendance) - attended_classes)
+    
     return future_classes_needed
 
 def predict_future_bunks(total_classes, attended_classes, future_total_classes):
     required_attendance = 0.75
     
-    required_future_attended = math.ceil(required_attendance * future_total_classes)
+    required_future_attended = math.ceil(future_total_classes * required_attendance)
     
-    future_bunkable_classes = future_total_classes - required_future_attended
+    future_bunkable_classes = max(0, future_total_classes - required_future_attended)
     
     return future_bunkable_classes
 
@@ -51,6 +52,9 @@ def calculate():
         
         if total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
+        
+        if attended_classes > total_classes:
+            return jsonify({'error': "Attended classes cannot be more than total classes."})
         
         attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
         if error:
@@ -76,6 +80,9 @@ def forecast():
         
         if total_classes == 0 or future_total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
+        
+        if attended_classes > total_classes:
+            return jsonify({'error': "Attended classes cannot be more than total classes."})
         
         future_classes_needed = forecast_classes_needed(total_classes, attended_classes, future_total_classes)
         future_bunkable_classes = predict_future_bunks(total_classes, attended_classes, future_total_classes)
