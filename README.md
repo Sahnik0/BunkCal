@@ -1,16 +1,16 @@
 
 # 🎉 BunkCal 🕶️✨
 
-Welcome to BunkCal , the ultimate tool for balancing your class attendance while mastering the art of bunking! 😎 Want to calculate your attendance and figure out how many classes you can skip and still keep that sweet 75%? We got you covered. 🎯
+Welcome to BunkCal , the ultimate tool for balancing your class attendance while mastering the art of bunking! 😎 Want to calculate your attendance and figure out how many classes you can skip and still maintain your desired percentage? We got you covered. 🎯
 
 ## 🎯 What is BunkCal?
 
-BunkCal is your personal attendance assistant! Enter the classes you’ve attended and the total held, and *voila!* ✨— BunkCal calculates your attendance percentage instantly. Thinking of skipping a few more classes? No worries! BunkCal predicts exactly how many more you can miss and still stay out of the danger zone. 🔥
+BunkCal is your personal attendance assistant! Enter the classes you’ve attended and the total held, and voila! ✨— BunkCal calculates your attendance percentage instantly. Thinking of skipping a few more classes? No worries! BunkCal predicts exactly how many more you can miss and still stay out of the danger zone. 🔥
 
 ## 🔥 Features
 
 - 📊 Attendance Calculator: Input your class data and get your current attendance percentage instantly.
-- 🔮 Bunk Predictor: Want to bunk? Find out how many more classes you can miss while still maintaining 75% attendance. 🧠
+- 🔮 Bunk Predictor: Want to bunk? Find out how many more classes you can miss while still maintaining desired attendance. 🧠
 - 🖥️ Sleek Interface: A clean, minimal design powered by HTML & CSS that makes tracking attendance fun!
 - ⚡ Real-Time Calculation: Dynamic, on-the-fly predictions powered by JavaScript and Python. No refreshes needed!
 
@@ -66,5 +66,5 @@ BunkCal is licensed under the MIT License — check out the [LICENSE](LICENSE) f
 
 ---
 
-Enjoy your new powers with **BunkCal** and master the delicate art of bunking like a pro! 😎✌️
+Enjoy your new powers with BunkCal and master the delicate art of bunking like a pro! 😎✌️
 
