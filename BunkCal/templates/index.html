@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>BunkCal</title>
+    <title>BunkOff</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -179,20 +179,20 @@ h1 {
     margin-bottom: 20px;
 }
 
-
+/* Character Styling */
 .character {
     position: fixed;
-    bottom: 10px; 
-    left: 10px;  
+    bottom: 10px; /* Adjusts the position from the bottom */
+    left: 10px;  /* Adjusts the position from the left */
     z-index: 1000;
 }
 
 .character img {
-    width: 100px; 
-    height: auto; 
+    width: 100px; /* Set the image size */
+    height: auto; /* Maintain aspect ratio */
 }
 
-
+/* Message Bubble Styling */
 .message-bubble {
     position: absolute;
     bottom: 100px; 
@@ -245,7 +245,7 @@ input{
     
     <header>
         <div class="header-container">
-            <h1>BunkCal</h1>
+            <h1>BunkOff</h1>
         </div>
     </header>
 
@@ -256,7 +256,7 @@ input{
     
     <div class="video-background">
         <video autoplay muted loop id="background-video">
-            <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+            <source src= '/static/background.mp4' type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -274,7 +274,7 @@ input{
     <div class="container" id="container">
         <h1>Bunk Classes Tension Free</h1>
 
-        <input type="number" id="attendance_percentage" placeholder="Attendance Percentage (e.g., 75%)">
+        <input type="number" id="attendance_percentage" placeholder="Attendance Percentage (e.g., 75%)" required value="75">
 
         <input type="number" id="total_classes" placeholder="Total Classes Held" required>
         <input type="number" id="attended_classes" placeholder="Classes Attended" required>
@@ -308,66 +308,62 @@ input{
         window.addEventListener('scroll', handleScroll);
 
         document.getElementById('calculate_btn').addEventListener('click', async function() {
-            const total_classes = document.getElementById('total_classes').value;
-            const attended_classes = document.getElementById('attended_classes').value;
-            const attendance_percentage = document.getElementById('attendance_percentage').value;
+    const total_classes = document.getElementById('total_classes').value;
+    const attended_classes = document.getElementById('attended_classes').value;
 
-            const response = await fetch('/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    total_classes: total_classes,
-                    attended_classes: attended_classes,
-                    attendance_percentage: attendance_percentage
-                })
-            });
+    const response = await fetch('/calculate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            total_classes: total_classes,
+            attended_classes: attended_classes
+        })
+    });
 
-            const result = await response.json();
-            const resultDiv = document.getElementById('result');
+    const result = await response.json();
+    const resultDiv = document.getElementById('result');
 
-            if (result.error) {
-                resultDiv.innerHTML = `<p style="color: red;">${result.error}</p>`;
-            } else {
-                resultDiv.innerHTML = `
-                    <p style="font-weight: bold; color: green;">Your attendance is ${result.attendance_percentage}</p>
-                    <p style="font-weight: bold; color: blue;">You can miss ${result.bunkable_classes} more classes and still maintain ${attendance_percentage}% attendance.</p>
-                `;
-            }
-        });
+    if (result.error) {
+        resultDiv.innerHTML = `<p style="color: red;">${result.error}</p>`;
+    } else {
+        resultDiv.innerHTML = `
+            <p style="font-weight: bold; color: green;">Your attendance is ${result.attendance_percentage}</p>
+            <p style="font-weight: bold; color: blue;">You can miss ${result.bunkable_classes} more classes and still maintain the required attendance.</p>
+        `;
+    }
+});
 
-        document.getElementById('forecast_btn').addEventListener('click', async function() {
-            const total_classes = document.getElementById('total_classes').value;
-            const attended_classes = document.getElementById('attended_classes').value;
-            const future_total_classes = document.getElementById('future_total_classes').value;
-            const attendance_percentage = document.getElementById('attendance_percentage').value;
+document.getElementById('forecast_btn').addEventListener('click', async function() {
+    const total_classes = document.getElementById('total_classes').value;
+    const attended_classes = document.getElementById('attended_classes').value;
+    const future_total_classes = document.getElementById('future_total_classes').value;
 
-            const response = await fetch('/forecast', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    total_classes: total_classes,
-                    attended_classes: attended_classes,
-                    future_total_classes: future_total_classes,
-                    attendance_percentage: attendance_percentage
-                })
-            });
+    const response = await fetch('/forecast', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            total_classes: total_classes,
+            attended_classes: attended_classes,
+            future_total_classes: future_total_classes
+        })
+    });
 
-            const result = await response.json();
-            const forecastResultDiv = document.getElementById('forecast_result');
+    const result = await response.json();
+    const forecastResultDiv = document.getElementById('forecast_result');
 
-            if (result.error) {
-                forecastResultDiv.innerHTML = `<p style="color: red;">${result.error}</p>`;
-            } else {
-                forecastResultDiv.innerHTML = `
-                    <p style="font-weight: bold; color: green;">You need to attend ${result.future_classes_needed} more classes to reach ${attendance_percentage}% attendance.</p>
-                    <p style="font-weight: bold; color: blue;">You can miss ${result.future_bunkable_classes} future classes and still maintain ${attendance_percentage}% attendance.</p>
-                `;
-            }
-        });
+    if (result.error) {
+        forecastResultDiv.innerHTML = `<p style="color: red;">${result.error}</p>`;
+    } else {
+        forecastResultDiv.innerHTML = `
+            <p style="font-weight: bold; color: green;">You need to attend ${result.future_classes_needed} more classes.</p>
+            <p style="font-weight: bold; color: blue;">You can miss ${result.future_bunkable_classes} classes in the future.</p>
+        `;
+    }
+});
 
         const messages = [
     "Go and Study 😒",
