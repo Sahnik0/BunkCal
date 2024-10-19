@@ -274,7 +274,7 @@ input{
     <div class="container" id="container">
         <h1>Bunk Classes Tension Free</h1>
 
-        <input type="number" id="attendance_percentage" placeholder="Attendance Percentage (e.g., 75%)" required value="75">
+        <input type="number" id="attendance_percentage" placeholder="Attendance Percentage (e.g., 75%)">
 
         <input type="number" id="total_classes" placeholder="Total Classes Held" required>
         <input type="number" id="attended_classes" placeholder="Classes Attended" required>
@@ -331,7 +331,7 @@ input{
                 resultDiv.innerHTML = `<p style="color: red;">${result.error}</p>`;
             } else {
                 resultDiv.innerHTML = `
-                    <p style="font-weight: bold; color: green;">Your attendance is ${result.attendance_percentage}%</p>
+                    <p style="font-weight: bold; color: green;">Your attendance is ${result.attendance_percentage}</p>
                     <p style="font-weight: bold; color: blue;">You can miss ${result.bunkable_classes} more classes and still maintain ${attendance_percentage}% attendance.</p>
                 `;
             }
@@ -383,7 +383,7 @@ function showRandomMessage() {
     document.getElementById("message").textContent = messages[randomIndex];
 }
 
-setInterval(showRandomMessage, 5000); // Change message every 5 seconds
+setInterval(showRandomMessage, 5000); 
 
     </script>
 
