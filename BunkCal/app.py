@@ -105,6 +105,20 @@ if __name__ == '__main__':
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    total_classes = int(request.form['total_classes'])
-    attended_classes = int(request.form['attended_classes'])
-    attendance_percentage = float(request.form['attendance_percentage'])  
+    try:
+        total_classes = int(request.form['total_classes'])
+        attended_classes = int(request.form['attended_classes'])
+    except (ValueError, KeyError) as e:
+        return jsonify({'error': 'Invalid input or missing parameters.'}), 400
+
+    attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
+    if error:
+        return jsonify({'error': error}), 400
+
+    save_to_csv(total_classes, attended_classes, attendance_percentage)
+    bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
+
+    return jsonify({
+        'attendance_percentage': f"{attendance_percentage:.2f}%",
+        'bunkable_classes': bunkable_classes
+    })
