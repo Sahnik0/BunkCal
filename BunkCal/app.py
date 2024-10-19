@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import csv
 import os
 import math
-
+from flask_cors import CORS
 app = Flask(__name__)
 
 def save_to_csv(total_classes, attended_classes, attendance_percentage):
@@ -19,36 +19,37 @@ def calculate_attendance(total_classes, attended_classes):
     attendance_percentage = (attended_classes / total_classes) * 100
     return attendance_percentage, None
 
+
 def calculate_bunkable_classes(total_classes, attended_classes):
     required_attendance = 0.75
     required_classes = math.ceil(required_attendance * total_classes)
-   
+    
     if attended_classes >= required_classes:
-       
-        max_bunkable_classes = math.floor((attended_classes - required_classes) / (1 - required_attendance))
+        max_bunkable_classes = total_classes - required_classes
     else:
-        max_bunkable_classes = 0
-   
+        remaining_classes = total_classes - (attended_classes + (total_classes - attended_classes))
+        max_bunkable_classes = max(0, remaining_classes - (required_classes - attended_classes))
+    
     return max_bunkable_classes
 
 def forecast_classes_needed(total_classes, attended_classes, future_total_classes):
     required_attendance = 0.75
-   
+    
     current_attendance_percentage = attended_classes / total_classes
 
     future_classes_needed = 0
     while (attended_classes + future_classes_needed) / future_total_classes < required_attendance:
         future_classes_needed += 1
-       
+        
     return future_classes_needed
 
 def predict_future_bunks(total_classes, attended_classes, future_total_classes):
     required_attendance = 0.75
-   
+    
     required_future_attended = math.ceil(required_attendance * future_total_classes)
-   
+    
     future_bunkable_classes = future_total_classes - required_future_attended
-   
+    
     return future_bunkable_classes
 
 @app.route('/')
@@ -57,31 +58,19 @@ def index():
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    try:
-        total_classes = int(request.form['total_classes'])
-        attended_classes = int(request.form['attended_classes'])
-        attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
-        if error:
-            return jsonify({'error': error}), 400
-        save_to_csv(total_classes, attended_classes, attendance_percentage)
-        
-        bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
-        response = jsonify({
-            'attendance_percentage': f"{attendance_percentage:.2f}%",
-            'bunkable_classes': bunkable_classes
-        })
-        return response
-    except Exception as e:
-        app.logger.error(f"Error in /calculate: {str(e)}")
-        app.logger.error(traceback.format_exc())
-        return jsonify({'error': str(e)}), 500
+    total_classes = int(request.form['total_classes'])
+    attended_classes = int(request.form['attended_classes'])
 
-@app.route('/debug', methods=['GET'])
-def debug():
+    attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
+    if error:
+        return jsonify({'error': error})
+
+    save_to_csv(total_classes, attended_classes, attendance_percentage)
+    
+    bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
     return jsonify({
-        'environment': dict(os.environ),
-        'request_headers': dict(request.headers),
-        'flask_config': dict(app.config)
+        'attendance_percentage': f"{attendance_percentage:.2f}%",
+        'bunkable_classes': bunkable_classes
     })
 
 @app.route('/forecast', methods=['POST'])
@@ -89,7 +78,7 @@ def forecast():
     total_classes = int(request.form['total_classes'])
     attended_classes = int(request.form['attended_classes'])
     future_total_classes = int(request.form['future_total_classes'])
-   
+    
     if total_classes == 0 or future_total_classes == 0:
         return jsonify({'error': "Total classes cannot be zero."})
 
@@ -103,3 +92,40 @@ def forecast():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    total_classes = request.form.get('total_classes')
+    attended_classes = request.form.get('attended_classes')
+
+    # Log or print the received data
+    print(f"Received total_classes: {total_classes}, attended_classes: {attended_classes}")
+
+    if not total_classes or not attended_classes:
+        return jsonify({'error': 'Missing data. Ensure all fields are filled.'})
+
+    total_classes = int(total_classes)
+    attended_classes = int(attended_classes)
+
+    attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
+    if error:
+        return jsonify({'error': error})
+
+    save_to_csv(total_classes, attended_classes, attendance_percentage)
+
+    bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
+    return jsonify({
+        'attendance_percentage': f"{attendance_percentage:.2f}%",
+        'bunkable_classes': bunkable_classes
+    })
