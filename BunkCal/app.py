@@ -1,17 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-import csv
-import os
 import math
 
 app = Flask(__name__)
-
-def save_to_csv(total_classes, attended_classes, attendance_percentage):
-    file_exists = os.path.isfile("attendance_data.csv")
-    with open("attendance_data.csv", mode="a", newline="") as file:
-        writer = csv.writer(file)
-        if not file_exists:
-            writer.writerow(["Total Classes Held", "Classes Attended", "Attendance Percentage"])
-        writer.writerow([total_classes, attended_classes, f"{attendance_percentage:.2f}%"])
 
 def calculate_attendance(total_classes, attended_classes):
     if total_classes == 0:
@@ -65,8 +55,6 @@ def calculate():
         attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
         if error:
             return jsonify({'error': error})
-        
-        save_to_csv(total_classes, attended_classes, attendance_percentage)
         
         bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
         
