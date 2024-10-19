@@ -57,19 +57,31 @@ def index():
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    total_classes = int(request.form['total_classes'])
-    attended_classes = int(request.form['attended_classes'])
+    try:
+        total_classes = int(request.form['total_classes'])
+        attended_classes = int(request.form['attended_classes'])
+        attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
+        if error:
+            return jsonify({'error': error}), 400
+        save_to_csv(total_classes, attended_classes, attendance_percentage)
+        
+        bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
+        response = jsonify({
+            'attendance_percentage': f"{attendance_percentage:.2f}%",
+            'bunkable_classes': bunkable_classes
+        })
+        return response
+    except Exception as e:
+        app.logger.error(f"Error in /calculate: {str(e)}")
+        app.logger.error(traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
 
-    attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
-    if error:
-        return jsonify({'error': error})
-
-    save_to_csv(total_classes, attended_classes, attendance_percentage)
-   
-    bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
+@app.route('/debug', methods=['GET'])
+def debug():
     return jsonify({
-        'attendance_percentage': f"{attendance_percentage:.2f}%",
-        'bunkable_classes': bunkable_classes
+        'environment': dict(os.environ),
+        'request_headers': dict(request.headers),
+        'flask_config': dict(app.config)
     })
 
 @app.route('/forecast', methods=['POST'])
