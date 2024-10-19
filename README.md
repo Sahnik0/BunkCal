@@ -12,7 +12,7 @@ BunkCal is your personal attendance assistant! Enter the classes you’ve attend
 - 📊 Attendance Calculator: Input your class data and get your current attendance percentage instantly.
 - 🔮 Bunk Predictor: Want to bunk? Find out how many more classes you can miss while still maintaining 75% attendance. 🧠
 - 🖥️ Sleek Interface: A clean, minimal design powered by HTML & CSS that makes tracking attendance fun!
-- ⚡ Real-Time Calculation**: Dynamic, on-the-fly predictions powered by JavaScript and Python. No refreshes needed!
+- ⚡ Real-Time Calculation: Dynamic, on-the-fly predictions powered by JavaScript and Python. No refreshes needed!
 
 ## 🛠️ Tech Stack
 
