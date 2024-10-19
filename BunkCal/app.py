@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import csv
 import os
 import math
-from flask_cors import CORS
+
 app = Flask(__name__)
 
 def save_to_csv(total_classes, attended_classes, attendance_percentage):
@@ -106,26 +106,6 @@ if __name__ == '__main__':
 
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    total_classes = request.form.get('total_classes')
-    attended_classes = request.form.get('attended_classes')
-
-    # Log or print the received data
-    print(f"Received total_classes: {total_classes}, attended_classes: {attended_classes}")
-
-    if not total_classes or not attended_classes:
-        return jsonify({'error': 'Missing data. Ensure all fields are filled.'})
-
-    total_classes = int(total_classes)
-    attended_classes = int(attended_classes)
-
-    attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
-    if error:
-        return jsonify({'error': error})
-
-    save_to_csv(total_classes, attended_classes, attendance_percentage)
-
-    bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes)
-    return jsonify({
-        'attendance_percentage': f"{attendance_percentage:.2f}%",
-        'bunkable_classes': bunkable_classes
-    })
+    total_classes = int(request.form['total_classes'])
+    attended_classes = int(request.form['attended_classes'])
+    attendance_percentage = float(request.form['attendance_percentage']) 
