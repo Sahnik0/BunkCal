@@ -11,8 +11,8 @@ def calculate_attendance(total_classes, attended_classes):
     return attendance_percentage, None
 
 # Function to calculate bunkable classes
-def calculate_bunkable_classes(total_classes, attended_classes, required_percentage):
-    required_attendance = required_percentage / 100.0  # Convert percentage to decimal
+def calculate_bunkable_classes(total_classes, attended_classes, required_attendance):
+    required_attendance = required_attendance / 100.0  # Convert percentage to decimal
     
     # Calculate the minimum number of classes needed to maintain required attendance
     min_required_classes = math.ceil(total_classes * required_attendance)
@@ -27,16 +27,16 @@ def calculate_bunkable_classes(total_classes, attended_classes, required_percent
     return bunkable_classes
 
 # Function to forecast classes needed to maintain required attendance
-def forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_percentage):
-    required_attendance = required_percentage / 100.0
+def forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_attendance):
+    required_attendance = required_attendance / 100.0
     
     future_classes_needed = max(0, math.ceil(future_total_classes * required_attendance) - attended_classes)
     
     return future_classes_needed
 
 # Function to predict future bunkable classes based on future total classes
-def predict_future_bunks(total_classes, attended_classes, future_total_classes, required_percentage):
-    required_attendance = required_percentage / 100.0
+def predict_future_bunks(total_classes, attended_classes, future_total_classes, required_attendance):
+    required_attendance = required_attendance / 100.0
     
     required_future_attended = math.ceil(future_total_classes * required_attendance)
     
@@ -55,12 +55,7 @@ def calculate():
     try:
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
-        
-        # Optional percentage input from the user
-        required_percentage = request.form.get('required_percentage', default=75)
-        
-        # Convert required_percentage to float
-        required_percentage = float(required_percentage) if required_percentage else 75.0
+        required_attendance = int(request.form['required_attendance'])  # Get the required attendance percentage
         
         if total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
@@ -72,7 +67,7 @@ def calculate():
         if error:
             return jsonify({'error': error})
         
-        bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes, required_percentage)
+        bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes, required_attendance)
         
         return jsonify({
             'attendance_percentage': f"{attendance_percentage:.2f}%",
@@ -90,12 +85,7 @@ def forecast():
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
         future_total_classes = int(request.form['future_total_classes'])
-        
-        # Optional percentage input from the user
-        required_percentage = request.form.get('required_percentage', default=75)
-        
-        # Convert required_percentage to float
-        required_percentage = float(required_percentage) if required_percentage else 75.0
+        required_attendance = int(request.form['required_attendance'])  # Get the required attendance percentage
         
         if total_classes == 0 or future_total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
@@ -103,8 +93,8 @@ def forecast():
         if attended_classes > total_classes:
             return jsonify({'error': "Attended classes cannot be more than total classes."})
         
-        future_classes_needed = forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_percentage)
-        future_bunkable_classes = predict_future_bunks(total_classes, attended_classes, future_total_classes, required_percentage)
+        future_classes_needed = forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_attendance)
+        future_bunkable_classes = predict_future_bunks(total_classes, attended_classes, future_total_classes, required_attendance)
         
         return jsonify({
             'future_classes_needed': future_classes_needed,
