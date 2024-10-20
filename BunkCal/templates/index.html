@@ -381,6 +381,40 @@ function showRandomMessage() {
 
 setInterval(showRandomMessage, 5000); 
 
+document.getElementById('attendanceForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const totalClasses = document.getElementById('total_classes').value;
+            const attendedClasses = document.getElementById('attended_classes').value;
+            const requiredPercentage = document.getElementById('required_percentage').value;
+            
+            const formData = new FormData();
+            formData.append('total_classes', totalClasses);
+            formData.append('attended_classes', attendedClasses);
+            if (requiredPercentage) {
+                formData.append('required_percentage', requiredPercentage); // Only append if entered
+            }
+            
+            fetch('/calculate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <p>Attendance Percentage: ${data.attendance_percentage}</p>
+                        <p>Bunkable Classes: ${data.bunkable_classes}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
     </script>
 
 </body>
