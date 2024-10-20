@@ -55,14 +55,7 @@ def calculate():
     try:
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
-        
-        # Get required percentage input from the user
-        required_percentage_input = request.form.get('required_percentage')
-        
-        if required_percentage_input:
-            required_percentage = float(required_percentage_input)
-        else:
-            return jsonify({'error': "Required attendance percentage must be provided."})
+        required_percentage = float(request.form['required_percentage'])
 
         if total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
@@ -92,14 +85,7 @@ def forecast():
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
         future_total_classes = int(request.form['future_total_classes'])
-        
-        # Get required percentage input from the user
-        required_percentage_input = request.form.get('required_percentage')
-        
-        if required_percentage_input:
-            required_percentage = float(required_percentage_input)
-        else:
-            return jsonify({'error': "Required attendance percentage must be provided."})
+        required_percentage = float(request.form['required_percentage'])
 
         if total_classes == 0 or future_total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
