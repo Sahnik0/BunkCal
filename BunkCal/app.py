@@ -3,14 +3,14 @@ import math
 
 app = Flask(__name__)
 
-# Function to calculate attendance percentage
+# Updated function to accept a required percentage
 def calculate_attendance(total_classes, attended_classes):
     if total_classes == 0:
         return None, "Total classes cannot be zero."
     attendance_percentage = (attended_classes / total_classes) * 100
     return attendance_percentage, None
 
-# Function to calculate bunkable classes, with optional percentage input
+# Updated function to calculate bunkable classes with percentage input
 def calculate_bunkable_classes(total_classes, attended_classes, required_percentage=75):
     required_attendance = required_percentage / 100  # Convert percentage to decimal
     
@@ -26,7 +26,6 @@ def calculate_bunkable_classes(total_classes, attended_classes, required_percent
     
     return bunkable_classes
 
-# Function to forecast classes needed for the future
 def forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_percentage=75):
     required_attendance = required_percentage / 100  # Convert percentage to decimal
     
@@ -34,7 +33,6 @@ def forecast_classes_needed(total_classes, attended_classes, future_total_classe
     
     return future_classes_needed
 
-# Function to predict future bunkable classes
 def predict_future_bunks(total_classes, attended_classes, future_total_classes, required_percentage=75):
     required_attendance = required_percentage / 100  # Convert percentage to decimal
     
@@ -53,8 +51,9 @@ def calculate():
     try:
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
-        # Get the optional required percentage input, default to 75%
-        required_percentage = float(request.form.get('required_percentage', 75))
+        
+        # Handle optional required percentage, default to 75% if not provided
+        required_percentage = request.form.get('required_percentage', default=75, type=float)
         
         if total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
@@ -62,12 +61,10 @@ def calculate():
         if attended_classes > total_classes:
             return jsonify({'error': "Attended classes cannot be more than total classes."})
         
-        # Calculate the attendance percentage
         attendance_percentage, error = calculate_attendance(total_classes, attended_classes)
         if error:
             return jsonify({'error': error})
         
-        # Calculate bunkable classes using the required percentage
         bunkable_classes = calculate_bunkable_classes(total_classes, attended_classes, required_percentage)
         
         return jsonify({
@@ -85,8 +82,9 @@ def forecast():
         total_classes = int(request.form['total_classes'])
         attended_classes = int(request.form['attended_classes'])
         future_total_classes = int(request.form['future_total_classes'])
-        # Get the optional required percentage input, default to 75%
-        required_percentage = float(request.form.get('required_percentage', 75))
+        
+        # Handle optional required percentage, default to 75% if not provided
+        required_percentage = request.form.get('required_percentage', default=75, type=float)
         
         if total_classes == 0 or future_total_classes == 0:
             return jsonify({'error': "Total classes cannot be zero."})
@@ -94,9 +92,7 @@ def forecast():
         if attended_classes > total_classes:
             return jsonify({'error': "Attended classes cannot be more than total classes."})
         
-        # Forecast the number of classes needed in the future
         future_classes_needed = forecast_classes_needed(total_classes, attended_classes, future_total_classes, required_percentage)
-        # Predict future bunkable classes
         future_bunkable_classes = predict_future_bunks(total_classes, attended_classes, future_total_classes, required_percentage)
         
         return jsonify({
