@@ -3,6 +3,7 @@
 
 Welcome to BunkCal , the ultimate tool for balancing your class attendance while mastering the art of bunking! 😎 Want to calculate your attendance and figure out how many classes you can skip and still maintain your desired percentage? We got you covered. 🎯
 
+![image](https://github.com/Sahnik0/BunkCal/blob/8f1c6c895ef810e5e43281d212c4a326b41471eb/WhatsApp%20Image%202025-01-09%20at%2000.38.17_ff2539c0.jpg)
 ## 🎯 What is BunkCal?
 
 BunkCal is your personal attendance assistant! Enter the classes you’ve attended and the total held, and voila! ✨— BunkCal calculates your attendance percentage instantly. Thinking of skipping a few more classes? No worries! BunkCal predicts exactly how many more you can miss and still stay out of the danger zone. 🔥
